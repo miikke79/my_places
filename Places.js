@@ -49,8 +49,8 @@ export default function Places({ navigation })  {
       </View>
       <View style={styles.buttoncontainer}>
         <View style={styles.button}>
-        <Button raised icon={{ name: 'save', color: '#fff' }} onPress={addPressed} title="SAVE" color="#f194ff" />
-        </View>
+        <Button color="lightgray" raised icon={{ name: 'save', color: '#fff' }} onPress={addPressed} title='SAVE' />
+      </View>
       </View>
       <FlatList 
         data={addresses}
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   button : {
     width: '95%',
     marginBottom: 30,
-    color:'gray'
+    justifyContent: 'space-evenly'
   },
 
   input : {

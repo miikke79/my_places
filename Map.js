@@ -14,7 +14,6 @@
       .then(response => response.json())  
       .then(data => {setLatitude(data.results[0].locations[0].latLng.lat), setLongitude(data.results[0].locations[0].latLng.lng) })
       .catch(error => {         Alert.alert('Error', error);   });
-      console.log(location);
     }, []);
     
       return (
