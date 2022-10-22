@@ -5,30 +5,28 @@ import * as SQLite from'expo-sqlite';
 import { Input, ListItem, Button, Icon } from'react-native-elements';
 
 export default function Places({ navigation })  {
-  const db = SQLite.openDatabase('shoplist.db');
+  const db = SQLite.openDatabase('addresses.db');
   const [listItem, setListItem] = useState('');
-  const [listQuantity, setListQuantity] = useState('');
-  const [shopping, setShopping] = useState([]);
+  const [addresses, setAddresses] = useState([]);
 
   useEffect(() => {
     db.transaction(tx => {
-      tx.executeSql('create table if not exists shopping (id integer primary key not null, item text, quantity text);');
+      tx.executeSql('create table if not exists addresses (id integer primary key not null, item text);');
     }, null, updateList);
   }, []);
 
   const addPressed = () => { 
     db.transaction(tx => {
-      tx.executeSql('insert into shopping (item, quantity) values (?, ?);',
-        [listItem, listQuantity]);
+      tx.executeSql('insert into addresses (item) values (?);',
+        [listItem]);
       }, null, updateList)
       setListItem('');
-      setListQuantity('');
   }
 
   const updateList = () => {
     db.transaction(tx => {
-      tx.executeSql('select * from shopping;', [], (_, { rows }) =>
-         setShopping(rows._array)
+      tx.executeSql('select * from addresses;', [], (_, { rows }) =>
+         setAddresses(rows._array)
       );
      }, null, null);
   }
@@ -36,7 +34,7 @@ export default function Places({ navigation })  {
   const deleteItem = (id) => {
     db.transaction(
     tx => {
-    tx.executeSql('delete from shopping where id = ?;', [id]);
+    tx.executeSql('delete from addresses where id = ?;', [id]);
   }, null, updateList) 
   }
 
@@ -51,23 +49,20 @@ export default function Places({ navigation })  {
       </View>
       <View style={styles.buttoncontainer}>
         <View style={styles.button}>
-        <Button color="#d3d3d3" raised icon={{ name: 'save', color: '#fff' }} onPress={addPressed} title="SAVE" />
+        <Button raised icon={{ name: 'save', color: '#fff' }} onPress={addPressed} title="SAVE" color="#f194ff" />
         </View>
       </View>
       <FlatList 
-        data={shopping}
+        data={addresses}
         renderItem = {({ item }) => (
           <ListItem bottomDivider>
-            <ListItem.Content>
-
-              <View  style={styles.listcontainer}>
-              <View>
+            <ListItem.Content style={styles.listcontainer}>
+              <View style={styles.listitemcontainer}>
                 <ListItem.Title>{item.item}</ListItem.Title>
               </View> 
               <View style={styles.buttoncontainer}>
                 <Text style={{ color: "grey" }} onPress={() => navigation.navigate('Map',{ item })} onLongPress={() => deleteItem(item.id)}>show on map</Text>
                 <ListItem.Chevron type="material" color ='gray' onPress={() => navigation.navigate('Map',{ item })} onLongPress={() => deleteItem(item.id)}/>
-              </View>
               </View>
             </ListItem.Content>
           </ListItem>
@@ -110,6 +105,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%'
+
+   },
+
+   listitemcontainer: {
+    width: '73%'
 
    },
 
